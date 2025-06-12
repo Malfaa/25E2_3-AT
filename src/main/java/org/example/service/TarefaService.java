@@ -8,9 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TarefaService {
-    private List<Tarefa> tarefasList = new ArrayList<>();
+    private static final List<Tarefa> tarefasList = new ArrayList<>();
 
 
     public TarefaService(){
@@ -21,9 +22,9 @@ public class TarefaService {
         salvar(mock);
     }
 
-    public TarefaService (List<Tarefa> lista) {
+    /*public TarefaService (List<Tarefa> lista) {
         this.tarefasList = lista;
-    }
+    }*/
 
     public List<Tarefa> listarTarefa(){
         return tarefasList;
@@ -33,7 +34,7 @@ public class TarefaService {
         return tarefasList.stream()
                 .filter(t -> t.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new NotFoundResponse("Rótulo não encontrado!"));
+                .orElseThrow(() -> new NotFoundResponse("Tarefa não encontrada!"));
     }
 
     public Tarefa salvar(TarefaDTO dto) {
@@ -45,6 +46,7 @@ public class TarefaService {
     @NotNull
     private static Tarefa construirTarefaUsandoDTO(TarefaDTO dto) {
         Tarefa tarefa = new Tarefa();
+        tarefa.setId( (!tarefasList.isEmpty()) ? tarefasList.getLast().getId()+1 : 1 );
         tarefa.setTitulo(dto.getTitulo());
         tarefa.setDescricao(dto.getDescricao());
         tarefa.setConcluida(dto.getConcluida());

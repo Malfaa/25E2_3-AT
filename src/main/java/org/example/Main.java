@@ -8,14 +8,10 @@ import java.time.Instant;
 import java.util.*;
 
 public class Main {
-
-    public static Javalin getApp(){
-        return Javalin.create();
-    }
     public static void main(String[] args) {
 
         //1
-        Javalin app = getApp().start(7000);
+        Javalin app = Javalin.create().start(7000);
         app.get("/hello", ctx -> ctx.result("Hello, Javalin!"));
 
         //2
@@ -59,11 +55,11 @@ public class Main {
             novaTarefa2.setDataCriacao(Instant.now());
 
             Tarefa novaTarefa3 = new Tarefa();
-            novaTarefa2.setId(3);
-            novaTarefa2.setTitulo("Novo Titulo Novamente");
-            novaTarefa2.setDescricao("Nova descricao");
-            novaTarefa2.setConcluida(true);
-            novaTarefa2.setDataCriacao(Instant.now());
+            novaTarefa3.setId(3);
+            novaTarefa3.setTitulo("Novo Titulo Novamente");
+            novaTarefa3.setDescricao("Nova descricao");
+            novaTarefa3.setConcluida(true);
+            novaTarefa3.setDataCriacao(Instant.now());
 
             tarefas.add(novaTarefa);
             tarefas.add(novaTarefa2);
@@ -74,7 +70,7 @@ public class Main {
         });
 
         //6
-        app.get("/tarefas", ctx -> ctx.json(tarefas));
+        app.get("/tarefa", ctx -> ctx.json(tarefas));
 
         app.get("/tarefa/{id}", ctx -> {
             String id = ctx.pathParam("id");

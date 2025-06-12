@@ -54,7 +54,7 @@ class MainTest {
     @Test
     void simulacao_verificandoStatusEEnviandoNovoItem_retornaCreated() {
         Javalin app = Javalin.create();
-        TarefaController.registrarRotas(app);
+        TarefaController.rotas(app);
 
         JavalinTest.test(app, (server, client) -> {
             TarefaDTO novaTarefa = new TarefaDTO();
@@ -74,7 +74,7 @@ class MainTest {
     @Test
     void path_buscaUtilizandoPathParam_retornoOk() {
         Javalin app = Javalin.create();
-        TarefaController.registrarRotas(app);
+        TarefaController.rotas(app);
 
         JavalinTest.test(app, (server, client) -> {
             TarefaDTO novaTarefa = new TarefaDTO();
@@ -100,7 +100,7 @@ class MainTest {
     @Test
     void lista_verificamListaJsonSemValoresVazios_retornoOk (){
         Javalin app = Javalin.create();
-        TarefaController.registrarRotas(app);
+        TarefaController.rotas(app);
 
         JavalinTest.test(app, (server, client) -> {
             TarefaDTO novaTarefa = new TarefaDTO();

@@ -11,13 +11,13 @@ public class Tarefa {
 
     public Tarefa(){}
 
-    public Tarefa(int id, String titulo, String descricao, Boolean concluida, Instant dataCriacao){
+    /*public Tarefa(int id, String titulo, String descricao, Boolean concluida, Instant dataCriacao){
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
         this.concluida = concluida;
         this.dataCriacao = dataCriacao;
-    }
+    }*/
 
     public int getId() {
         return id;
