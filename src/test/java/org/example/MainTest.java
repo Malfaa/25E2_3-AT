@@ -8,34 +8,53 @@ import okhttp3.*;
 import org.example.controller.TarefaController;
 import org.example.dto.TarefaDTO;
 import org.example.model.Tarefa;
+import org.example.service.TarefaService;
+import org.example.utils.TarefaFixture;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.NotExtensible;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MainTest {
     ObjectMapper mapper;
 
-    Tarefa tarefa1 = new Tarefa();
+    @Mock
+    private TarefaService tarefaService;
+
+    @InjectMocks
+    private TarefaController tarefaController;
+
 
     @BeforeEach
     void setup() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 
+    }
 
-        tarefa1.setId(1);
-        tarefa1.setTitulo("Titulo 1");
-        tarefa1.setDescricao("Primeira descricao");
-        tarefa1.setConcluida(true);
-        tarefa1.setDataCriacao(Instant.now());
+    @NotNull
+    private Javalin rotasParaApp(){
+        Javalin app = Javalin.create();
+        tarefaController.rotas(app);
+        return app;
     }
 
     //1
     @Test
     void validacao_validarEndpointHello_retornoOK() {
+
         Javalin app = Javalin.create()
                 .get("/hello", ctx -> {
                     ctx.result("Hello, Javalin!");
@@ -47,20 +66,22 @@ class MainTest {
             assertEquals("Hello, Javalin!", response.body().string());
 
         });
+
+        //verify();
     }
 
 
     //2
     @Test
-    void simulacao_verificandoStatusEEnviandoNovoItem_retornaCreated() {
-        Javalin app = Javalin.create();
-        TarefaController.rotas(app);
+    void simulacao_verificandoStatusEEnviandoNovoItem_retornaCreated() {//TESTASR
+        TarefaDTO novaTarefaDTO = TarefaFixture.buildTarefaDTO();
 
-        JavalinTest.test(app, (server, client) -> {
-            TarefaDTO novaTarefa = new TarefaDTO();
-            novaTarefa.setTitulo("Teste");
-            novaTarefa.setDescricao("Descrição da tarefa");
-            novaTarefa.setConcluida(false);
+        Tarefa novaTarefa = TarefaFixture.buildTarefa();
+
+        when(tarefaService.salvar(novaTarefaDTO)).thenReturn(novaTarefa);
+
+        JavalinTest.test(rotasParaApp(), (server, client) -> {
+
 
             String jsonTarefa = mapper.writeValueAsString(novaTarefa);
             Response response = client.post("/tarefa", jsonTarefa);
@@ -68,19 +89,17 @@ class MainTest {
             assertEquals(201, response.code());
             assertNotNull(jsonTarefa);
         });
+
+        verify(tarefaService).salvar(any());
     }
 
     //3
     @Test
     void path_buscaUtilizandoPathParam_retornoOk() {
-        Javalin app = Javalin.create();
-        TarefaController.rotas(app);
 
-        JavalinTest.test(app, (server, client) -> {
-            TarefaDTO novaTarefa = new TarefaDTO();
-            novaTarefa.setTitulo("Teste");
-            novaTarefa.setDescricao("Descrição da tarefa");
-            novaTarefa.setConcluida(false);
+
+        JavalinTest.test(rotasParaApp(), (server, client) -> {
+            TarefaDTO novaTarefa = TarefaFixture.buildTarefaDTO();
 
             String jsonTarefa = mapper.writeValueAsString(novaTarefa);
             Response postResponse = client.post("/tarefa", jsonTarefa);
@@ -99,21 +118,18 @@ class MainTest {
     //4
     @Test
     void lista_verificamListaJsonSemValoresVazios_retornoOk (){
-        Javalin app = Javalin.create();
-        TarefaController.rotas(app);
 
-        JavalinTest.test(app, (server, client) -> {
-            TarefaDTO novaTarefa = new TarefaDTO();
-            novaTarefa.setTitulo("Teste");
-            novaTarefa.setDescricao("Descrição da tarefa");
-            novaTarefa.setConcluida(false);
 
-            String jsonTarefa = mapper.writeValueAsString(novaTarefa);
+        JavalinTest.test(rotasParaApp(), (server, client) -> {
+            TarefaDTO novaTarefaDTO = TarefaFixture.buildTarefaDTO();
+
+            String jsonTarefa = mapper.writeValueAsString(novaTarefaDTO);
             client.post("/tarefa", jsonTarefa);
 
             var response = client.get("/tarefa");
 
             assertNotNull(response.body());
+            assertEquals(novaTarefaDTO.getTitulo(), mapper.readValue(response.body().string(), TarefaDTO.class).getTitulo());
         });
     }
 }

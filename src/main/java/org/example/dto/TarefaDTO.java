@@ -5,8 +5,6 @@ public class TarefaDTO {
     private String descricao = null;
     private Boolean concluida = false;
 
-
-
     public String getTitulo() {
         return titulo;
     }

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TarefaService {
     private static final List<Tarefa> tarefasList = new ArrayList<>();
@@ -21,10 +20,6 @@ public class TarefaService {
         mock.setConcluida(true);
         salvar(mock);
     }
-
-    /*public TarefaService (List<Tarefa> lista) {
-        this.tarefasList = lista;
-    }*/
 
     public List<Tarefa> listarTarefa(){
         return tarefasList;
