@@ -2,6 +2,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.Response;
 import org.example.controller.TarefaController;
@@ -18,10 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static utils.TarefaFixture.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -110,7 +109,7 @@ public class Etapa2Test {
 
     //4
     @Test
-    void lista_verificamListaJsonSemValoresVazios_retornoOk(){
+    void lista_verificaListaJsonSemValoresVazios_retornoOk(){
         Tarefa tarefaUm = criarTarefaMock(1, "PRIMEIRA TAREFA", "Descricao da Tarefa UM", true);
         Tarefa tarefaDois = criarTarefaMock(2, "SEGUNDA TAREFA", "Descricao da Tarefa DOIS", true);
 
@@ -132,6 +131,31 @@ public class Etapa2Test {
             assertEquals("PRIMEIRA TAREFA", respotaTarefas.get(0).getTitulo());
             assertEquals("SEGUNDA TAREFA", respotaTarefas.get(1).getTitulo());
         });
+    }
+
+    @Test
+    void titulo_verificaSeIdInvalido_retorna400() {
+        JavalinTest.test(criarAppComRotas(), (server, client) -> {
+            var response = client.get("/tarefas/teste");
+            assertEquals(400, response.code());
+
+            assert response.body() != null;
+            assertFalse(response.body().string().contains("ID inválido. Use um numero inteiro!"));
+        });
+
+        verifyNoInteractions(tarefaService);
+    }
+
+    @Test
+    void deveRetornar404AoBuscarRotuloInexistente() {
+        when(tarefaService.buscarPorId(ID_TAREFA)).thenThrow(new NotFoundResponse("Tarefa não encontrada"));
+
+        JavalinTest.test(criarAppComRotas(), (server, client) -> {
+            var response = client.get("/tarefas/" + ID_TAREFA);
+            assertEquals(404, response.code());
+        });
+
+        verify(tarefaService).buscarPorId(ID_TAREFA);
     }
 
 

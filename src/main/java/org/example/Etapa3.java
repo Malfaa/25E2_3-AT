@@ -72,6 +72,7 @@ public class Etapa3 {
     }
 
     //a
+    //Faz o envio utilizando um POST, insere no banco de dados
     public static void clientPost() throws IOException, URISyntaxException {
         HttpURLConnection conn = getConnection(URL_TAREFA_PATH, "POST");
         try {
@@ -98,6 +99,7 @@ public class Etapa3 {
     }
 
     //b
+    //Faz a busca de todos os itens utilizando o GET
     public static void clientGet() throws IOException, URISyntaxException{
         HttpURLConnection connection = getConnection(URL_TAREFA_PATH, "GET");
 
@@ -131,6 +133,7 @@ public class Etapa3 {
     }
 
     //c
+    //Faz uma busca utilizando parâmetro no GET
     public static void buscaComParam() throws IOException, URISyntaxException {
         System.out.println("Digite o ID desejado: ");
         Scanner scan = new Scanner(System.in);
@@ -167,6 +170,7 @@ public class Etapa3 {
 
 
     //d
+    //Faz uma busca em um endpoint status
     public static void buscaStatus() throws IOException, URISyntaxException {
         HttpURLConnection connection = getConnection("http://localhost:7000/status", "GET");
 
