@@ -6,6 +6,8 @@ import io.javalin.http.Context;
 import org.example.dto.TarefaDTO;
 import org.example.service.TarefaService;
 
+import java.time.Instant;
+
 public class TarefaController {
 
     public static final String TAREFA_PATH = "/tarefas";
@@ -32,6 +34,14 @@ public class TarefaController {
            var novaTarefa = service.salvarTarefa(dto);
            ctx.status(201).json(novaTarefa);
         });
+
+        app.get("/status", ctx -> {
+            String jsonString = String.format("{\"4status\":\"%d\",\"timestamp\":\"%s\"}",
+                    ctx.statusCode(),
+                    Instant.now().toString());
+            ctx.result(jsonString);
+        });
+
     }
 
     private int parseIdParametro( Context ctx) {

@@ -28,7 +28,7 @@ public class HttpUtil {
         return connection;
     }
 
-    public static void gravacaoDados(HttpURLConnection connection, TarefaDTO dto) throws IOException {
+    public static String gravacaoDados(HttpURLConnection connection, TarefaDTO dto) throws IOException {
         ObjectMapper jsonMap = new ObjectMapper();
         var json = jsonMap.writeValueAsString(dto);
 
@@ -36,5 +36,6 @@ public class HttpUtil {
             byte[] input = json.getBytes(StandardCharsets.UTF_8);
             os.write(input);
         }
+        return json;
     }
 }

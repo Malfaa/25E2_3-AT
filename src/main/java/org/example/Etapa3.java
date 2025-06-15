@@ -77,6 +77,7 @@ public class Etapa3 {
         HttpURLConnection conn = getConnection(URL_TAREFA_PATH, "POST");
         try {
             conn.setDoOutput(true);
+            String jsonResposta = "";
 
             if (conn.getRequestMethod().equals("POST")){
                 TarefaDTO novaTarefa = new TarefaDTO();
@@ -84,12 +85,13 @@ public class Etapa3 {
                 novaTarefa.setDescricao("Descrição mostra que foi gravado pelo HTTPURLCONNECTION");
                 novaTarefa.setConcluida(true);
 
-                gravacaoDados(conn, novaTarefa);
+                jsonResposta = gravacaoDados(conn, novaTarefa);
             }
 
             var responseCode = conn.getResponseCode();
             System.out.println("-- 1. Client Post --");
             System.out.println("Código da resposta: " + responseCode);
+            System.out.println("Resposta do post: " + jsonResposta);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -139,7 +141,7 @@ public class Etapa3 {
         Scanner scan = new Scanner(System.in);
         int id = scan.nextInt();
 
-        String urlComId = String.format("http://localhost:7000/tarefa/%d", id);
+        String urlComId = String.format("http://localhost:7070/tarefas/%d", id);
 
         HttpURLConnection connection = getConnection(urlComId, "GET");
 
@@ -172,7 +174,7 @@ public class Etapa3 {
     //d
     //Faz uma busca em um endpoint status
     public static void buscaStatus() throws IOException, URISyntaxException {
-        HttpURLConnection connection = getConnection("http://localhost:7000/status", "GET");
+        HttpURLConnection connection = getConnection("http://localhost:7070/status", "GET");
 
         BufferedReader reader;
         StringBuilder strBuilder = new StringBuilder();
